@@ -7,39 +7,54 @@ import com.airclaimbd.airclaimbackend.repository.LostItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MatchingService {
 
     @Autowired
-    private LostItemRepository lostRepo;
+    private LostItemRepository lostRepository;
 
     @Autowired
-    private FoundItemRepository foundRepo;
+    private FoundItemRepository foundRepository;
 
+    // Called when a Found Item is submitted
     public void matchFoundItem(FoundItem foundItem) {
 
-        String bag = foundItem.getBagTagNumber().trim().toUpperCase();
-        String ticket = foundItem.getTicketNumber().trim().toUpperCase();
+        Optional<LostItem> lost = lostRepository.findByBagTagNumberAndTicketNumber(
+                foundItem.getBagTagNumber(),
+                foundItem.getTicketNumber()
+        );
 
-        List<LostItem> allLost = lostRepo.findAll();
+        if (lost.isPresent()) {
 
-        for (LostItem lost : allLost) {
+            LostItem lostItem = lost.get();
 
-            String lostBag = lost.getBagTagNumber().trim().toUpperCase();
-            String lostTicket = lost.getTicketNumber().trim().toUpperCase();
+            lostItem.setStatus("Matched");
+            foundItem.setStatus("Matched");
 
-            if (lostBag.equals(bag) || lostTicket.equals(ticket)) {
+            lostRepository.save(lostItem);
+            foundRepository.save(foundItem);
+        }
+    }
 
-                lost.setStatus("Matched");
-                foundItem.setStatus("Matched");
+    // Called when a Lost Item is submitted
+    public void matchLostItem(LostItem lostItem) {
 
-                lostRepo.save(lost);
-                foundRepo.save(foundItem);
+        Optional<FoundItem> found = foundRepository.findByBagTagNumberAndTicketNumber(
+                lostItem.getBagTagNumber(),
+                lostItem.getTicketNumber()
+        );
 
-                return;
-            }
+        if (found.isPresent()) {
+
+            FoundItem foundItem = found.get();
+
+            lostItem.setStatus("Matched");
+            foundItem.setStatus("Matched");
+
+            lostRepository.save(lostItem);
+            foundRepository.save(foundItem);
         }
     }
 }

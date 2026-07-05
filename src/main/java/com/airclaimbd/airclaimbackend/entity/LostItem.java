@@ -1,6 +1,9 @@
 package com.airclaimbd.airclaimbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.util.Base64;
 
 @Entity
 @Table(name = "lost_items")
@@ -11,26 +14,45 @@ public class LostItem {
     private Long id;
 
     private String airportName;
+
     private String passengerName;
+
     private String email;
+
     private String phone;
+
     private String itemName;
 
     @Column(length = 1000)
     private String itemDescription;
 
     private String bagTagNumber;
+
     private String ticketNumber;
+
     private String dateLost;
+
     private String status = "Pending";
 
-    public LostItem() {}
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    @JsonIgnore
+    private byte[] image;
 
-    public Long getId() { return id; }
+    public LostItem() {
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getAirportName() { return airportName; }
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAirportName() {
+        return airportName;
+    }
 
     public void setAirportName(String airportName) {
         this.airportName = airportName;
@@ -106,5 +128,23 @@ public class LostItem {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
+    @Transient
+    public String getImageBase64() {
+
+        if (image == null || image.length == 0) {
+            return null;
+        }
+
+        return Base64.getEncoder().encodeToString(image);
     }
 }
