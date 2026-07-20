@@ -1,34 +1,28 @@
 package com.airclaimbd.airclaimbackend.dto;
 
-public class DashboardStats {
+public class DashboardResponse {
 
     private long totalUsers;
-
     private long totalLostReports;
-
     private long totalFoundReports;
-
     private long matchedReports;
-
     private long pendingReports;
 
-    public DashboardStats() {
+    public DashboardResponse() {
     }
 
-    public DashboardStats(
+    public DashboardResponse(
             long totalUsers,
             long totalLostReports,
             long totalFoundReports,
             long matchedReports,
             long pendingReports
     ) {
-
         this.totalUsers = totalUsers;
         this.totalLostReports = totalLostReports;
         this.totalFoundReports = totalFoundReports;
         this.matchedReports = matchedReports;
         this.pendingReports = pendingReports;
-
     }
 
     public long getTotalUsers() {
@@ -70,5 +64,4 @@ public class DashboardStats {
     public void setPendingReports(long pendingReports) {
         this.pendingReports = pendingReports;
     }
-
 }

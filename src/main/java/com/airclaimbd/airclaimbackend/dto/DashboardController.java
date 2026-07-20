@@ -13,8 +13,18 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
+    // Home Page (All Database Statistics)
     @GetMapping("/stats")
-    public DashboardStats getStats() {
+    public DashboardStats getDashboardStats() {
         return dashboardService.getDashboardStats();
     }
+
+    // User Dashboard
+    @GetMapping("/stats/{email}")
+    public DashboardStats getUserDashboardStats(
+            @PathVariable String email
+    ) {
+        return dashboardService.getUserDashboardStats(email);
+    }
+
 }
